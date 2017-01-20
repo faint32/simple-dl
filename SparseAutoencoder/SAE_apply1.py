@@ -12,7 +12,7 @@ import numpy as np
 import scipy.io
 import scipy.optimize
 import matplotlib.pyplot
-from SAE import SparseAutoencoder
+from SAE import SparseAutoEncoder
 
 
 def normalize_dataset(dataset):
@@ -92,13 +92,13 @@ def execute():
     hidden_size = hid_patch_side * hid_patch_side  # number of hidden units
 
     training_data = load_dataset(num_patches, vis_patch_side)
-    encoder = SparseAutoencoder(visible_size, hidden_size, rho, lamda, beta)
+    encoder = SparseAutoEncoder(visible_size, hidden_size, rho, lamda, beta)
 
     print '...Training'
     """ Run the L-BFGS algorithm to get the optimal parameter values """
     opt_solution = scipy.optimize.minimize(
         encoder.loss_value, encoder.theta, args=(training_data,), method='L-BFGS-B',
-        jac=True, options={'maxiter': max_iterations}
+        jac=True, options={'maxiter': max_iterations, 'disp': True}
     )
     print 'Train over.'
     opt_theta = opt_solution.x
@@ -107,4 +107,5 @@ def execute():
     visualize_w1(opt_w1, vis_patch_side, hid_patch_side)
 
 
-execute()
+if __name__ == '__main__':
+    execute()

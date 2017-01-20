@@ -11,8 +11,7 @@ import random
 
 import numpy as np
 import matplotlib.pyplot as plt
-from utils.display_network import display_network
-from utils.sample_images import sample_images_raw
+from utils import display_network, sample_images_raw
 
 # Step 0a: 加载图片数据，随机抽取并显示
 x = sample_images_raw()  # 144*10000, 144: 12*12

@@ -11,7 +11,7 @@
 
 import random
 from sklearn.decomposition import PCA
-from utils.sample_images import sample_images_raw
+from utils import sample_images_raw
 
 # 加载图片数据
 x = sample_images_raw()  # n_features * n_samples

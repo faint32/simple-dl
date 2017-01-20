@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 
-class SparseAutoencoder(object):
+class SparseAutoEncoder(object):
     """
         稀疏自编码：在较多的隐藏单元中，加入系数判罚，表现稀疏性质。
         模拟人类神经系统在某一刺激下，大部分神经元是被抑制的。稀疏意味着系统在尝试去特征选择，找出大量维度中真正重要的若干维。
@@ -127,3 +127,15 @@ class SparseAutoencoder(object):
         # 返回loss值和theta梯度
         return [cost, theta_grad]
 
+    @staticmethod
+    def feed_forward(theta, data, visible_size, hidden_size):
+        limit0 = 0
+        limit1 = hidden_size * visible_size
+        limit2 = 2 * hidden_size * visible_size
+        limit3 = 2 * hidden_size * visible_size + hidden_size
+
+        w1 = theta[limit0: limit1].reshape(hidden_size, visible_size)
+        b1 = theta[limit2: limit3].reshape(hidden_size, 1)
+
+        z2 = w1.dot(data) + b1
+        return 1 / (1 + np.exp(-z2))

@@ -64,19 +64,37 @@ class SoftmaxRegression(object):
 
         return [cost, theta_grad]
 
-    def softmax_predict(self, theta, input):
+    def softmax_predict(self, theta, x_in):
         """Returns predicted classes for a set of inputs"""
 
         # Reshape 'theta' for ease of computation
         theta = theta.reshape(self.num_classes, self.input_size)
 
         # Compute the class probabilities for each example
-        theta_x = np.dot(theta, input)
+        theta_x = np.dot(theta, x_in)
         hypothesis = np.exp(theta_x)
         probabilities = hypothesis / np.sum(hypothesis, axis=0)
 
         # Give the predictions based on probability values
-        predictions = np.zeros((input.shape[1], 1))
+        predictions = np.zeros((x_in.shape[1], 1))
+        predictions[:, 0] = np.argmax(probabilities, axis=0)
+
+        return predictions
+
+    @staticmethod
+    def predict_out(theta, x_in, num_classes, input_size):
+        """Returns predicted classes for a set of inputs"""
+
+        # Reshape 'theta' for ease of computation
+        theta = theta.reshape(num_classes, input_size)
+
+        # Compute the class probabilities for each example
+        theta_x = np.dot(theta, x_in)
+        hypothesis = np.exp(theta_x)
+        probabilities = hypothesis / np.sum(hypothesis, axis=0)
+
+        # Give the predictions based on probability values
+        predictions = np.zeros((x_in.shape[1], 1))
         predictions[:, 0] = np.argmax(probabilities, axis=0)
 
         return predictions
@@ -98,7 +116,7 @@ def execute():
     opt_solution = scipy.optimize.minimize(
         regressor.softmax_cost, regressor.theta,
         args=(training_data, training_labels,), method='L-BFGS-B',
-        jac=True, options={'maxiter': max_iterations}
+        jac=True, options={'maxiter': max_iterations, 'disp': True}
     )
     opt_theta = opt_solution.x
 
@@ -112,4 +130,5 @@ def execute():
     print "Accuracy :", np.mean(correct)
 
 
-execute()
+if __name__ == '__main__':
+    execute()
