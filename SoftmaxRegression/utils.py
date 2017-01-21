@@ -2,9 +2,9 @@
 # coding: utf-8
 
 """
-    Author: YuJun
-    Email: cuteuy@gmail.com
-    Date created: 2017/1/20
+    ...
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Author: YuJun <cuteuy@gmail.com>
 """
 
 

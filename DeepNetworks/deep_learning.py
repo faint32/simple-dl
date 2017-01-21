@@ -2,10 +2,6 @@
 # coding: utf-8
 
 """
-    Author: YuJun
-    Email: cuteuy@gmail.com
-    Date created: 2017/1/20
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     深度学习模型：
         1、对原始数据自编码。
         2、对第一层自编码后的数据再次自编码。
@@ -15,7 +11,9 @@
 
     此处，进行预训练的数据就是带标注的数据。
     若直接softmax分类，即与文件夹SoftmaxRegression一致，准确率为92
-    这里微调前准确率为0.872，微调后准确率为0.975。
+    这里微调前准确率为88 %，微调后准确率为98%。
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Author: YuJun <cuteuy@gmail.com>
 """
 
 
@@ -23,9 +21,10 @@ import numpy
 import scipy.io
 import scipy.sparse
 import scipy.optimize
+import matplotlib.pyplot as plt
 from sklearn.externals import joblib
 from SparseAutoEncoder.SAE import SparseAutoEncoder
-from SoftmaxRegression.softmax import SoftmaxRegression
+from SoftmaxRegression.SR import SoftmaxRegression
 from utils import load_mnist_images, load_mnist_labels, display_network
 
 
@@ -162,8 +161,8 @@ def stacked_auto_encoder_predict(theta, net_config, data):
 def execute_stacked_auto_encoder():
 
     visible_size = 784    # size of input vector
-    hidden_size1 = 200    # size of hidden layer vector of first auto encoder
-    hidden_size2 = 200    # size of hidden layer vector of second auto encoder
+    hidden_size1 = 225    # size of hidden layer vector of first auto encoder
+    hidden_size2 = 196    # size of hidden layer vector of second auto encoder
     rho = 0.1             # desired average activation of hidden units
     lambda_ = 0.003       # weight decay parameter
     beta = 3              # weight of sparsity penalty term
@@ -254,6 +253,21 @@ def execute_stacked_auto_encoder():
     predictions = stacked_auto_encoder_predict(fine_tuning_theta, net_config, test_data)
     correct = test_labels[:, 0] == predictions[:, 0]
     print "Accuracy after fine tuning :", numpy.mean(correct)
+
+    # --------------------------------------------
+    w1 = sae1_theta[0:visible_size * hidden_size1].reshape(hidden_size1, visible_size)
+    image_w1 = display_network(w1.transpose())
+    fig1 = plt.figure()
+    plt.imshow(image_w1, cmap=plt.cm.gray)
+    plt.title('First AutoEncoder Weight.')
+
+    w2 = sae2_theta[0:hidden_size2 * hidden_size1].reshape(hidden_size2, hidden_size1)
+    image_w2 = display_network(w2.transpose())
+    fig2 = plt.figure()
+    plt.imshow(image_w2, cmap=plt.cm.gray)
+    plt.title('Second AutoEncoder Weight.')
+    plt.show()
+    # --------------------------------------------
 
 if __name__ == '__main__':
     execute_stacked_auto_encoder()

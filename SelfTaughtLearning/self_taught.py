@@ -2,9 +2,9 @@
 # coding: utf-8
 
 """
-    Author: YuJun
-    Email: cuteuy@gmail.com
-    Date created: 2017/1/19
+    ...
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Author: YuJun <cuteuy@gmail.com>
 """
 
 import numpy as np
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from sklearn.externals import joblib
 from utils import load_mnist_labels, load_mnist_images, display_network
 from SparseAutoEncoder.SAE import SparseAutoEncoder
-from SoftmaxRegression.softmax import SoftmaxRegression
+from SoftmaxRegression.SR import SoftmaxRegression
 
 
 def self_taught():
@@ -26,7 +26,7 @@ def self_taught():
 
     这也是自学习的强大之处：先使用非标注的数据提取精华，之后用提取精华的方法先提取，再训练和测试。
 
-    若为先提取自编码，则准确率为96，此处为98
+    若为先提取自编码，则准确率为96%，此处为98%
     """
     print 'Loading data sets...'
     images = load_mnist_images('data/train-images.idx3-ubyte')
@@ -71,7 +71,6 @@ def self_taught():
     image_w1 = display_network(w1.transpose())
     fig1 = plt.figure()
     plt.imshow(image_w1, cmap=plt.cm.gray)
-    # plt.title('Raw patch images')
     plt.title('AutoEncoder Weight.')
     plt.show()
 
@@ -97,8 +96,8 @@ def self_taught():
 
     # ----测试模型准确度-----------------------
     print 'Predicting the data with the trained model...'
-    the_opt_theta = joblib.load('model/SR_theta.pkl')
-    predictions = SoftmaxRegression.predict_out(the_opt_theta, test_features, num_labels, hidden_size)
+    opt_theta = joblib.load('model/SR_theta.pkl')
+    predictions = SoftmaxRegression.predict_out(opt_theta, test_features, num_labels, hidden_size)
     correct = test_labels[:, 0] == predictions[:, 0]
     print "Accuracy :", np.mean(correct)
 

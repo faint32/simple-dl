@@ -1,13 +1,54 @@
 # simple-dl
-无监督特征学习和深度学习具体应用。
+Deep Learning related code examples. (Including the exercises of UFLDL)
 
-基于
+Dependence：
 [Numpy](http://www.numpy.org/)
 [Scipy](https://www.scipy.org/)
 [Matplotlib](http://matplotlib.org/)
-实现，部分功能使用直接调用[Sklearn](http://scikit-learn.org/)完成。
+[Sklearn](http://scikit-learn.org/).
 
 
-- 参考
-    - [UFLDL教程](http://ufldl.stanford.edu/wiki/index.php/UFLDL教程)
+## Description 
+    TIP: The first seven are the UFLDL exercises implement in python.
     
+####SparseAutoEncoder
+ - Sparse autoencoder.
+ - 稀疏自编码
+   
+####PCA_Whitening
+ - PCA / Whitening based on PCA / ZCA Whitening based on PCA.
+ - 主成分分析 / PCA白化 / ZCA白化
+   
+####SoftmaxRegression
+ - SoftMax Regression, generalization of logistic regression.
+ - SoftMax回归
+   
+####SelfTaughtLearning
+ - Extract features by Autoencoder, then make SoftMax Regression.
+ - 自编码  -->  SoftMax
+   
+####DeepNetworks
+ - Extract features by two hidden layers Autoencoder (and Fine-tuning with the labeled data), then make SoftMax Regression.
+ - 深度多层自编码 (--> 微调 ) --> SoftMax 
+    
+####LinearDecoder
+ - ZCAWhiten the data and get the parameters of Autoencoder which has a linear decoder, then save the parameters. 
+ - ZCA白化 --> 线性解码的稀疏自编码 --> 获取预处理参数
+   
+####ConvolutionPooling
+ - Extract features with the parameters above and convolve/pool the features, then make SoftMax Regression.
+ - 应用预处理参数 --> 卷积/池化 --> SoftMax
+   
+
+
+## Others
+
+- Reference
+    - [UFLDL](http://ufldl.stanford.edu/wiki/index.php/UFLDL_Tutorial)
+   
+- TODOS: 
+    - Advanced Topics of UFLDL
+        - Sparse Coding
+        - ICA Style Models
+    - Other deep learning related code.
+  

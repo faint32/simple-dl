@@ -2,13 +2,16 @@
 # coding: utf-8
 
 """
-    Author: YuJun
-    Email: cuteuy@gmail.com
-    Date created: 2017/1/19
+    稀疏自编码
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Author: YuJun <cuteuy@gmail.com>
 """
 import math
 import time
+import scipy.io
 import numpy as np
+import scipy.optimize
+from utils import load_dataset, load_mnist_images, visualize_w1
 
 
 class SparseAutoEncoder(object):
@@ -139,3 +142,70 @@ class SparseAutoEncoder(object):
 
         z2 = w1.dot(data) + b1
         return 1 / (1 + np.exp(-z2))
+
+
+# 稀疏自编码应用1
+def apply1():
+    """ Define the parameters of the Autoencoder """
+
+    vis_patch_side = 8  # side length of sampled image patches
+    hid_patch_side = 5  # side length of representative image patches
+    rho = 0.01  # desired average activation of hidden units
+    lamda = 0.0001  # weight decay parameter
+    beta = 3  # weight of sparsity penalty term
+    num_patches = 10000  # number of training examples
+    max_iterations = 400  # number of optimization iterations
+
+    visible_size = vis_patch_side * vis_patch_side  # number of input units
+    hidden_size = hid_patch_side * hid_patch_side  # number of hidden units
+
+    training_data = load_dataset(num_patches, vis_patch_side)
+    encoder = SparseAutoEncoder(visible_size, hidden_size, rho, lamda, beta)
+
+    print '...Training'
+    """ Run the L-BFGS algorithm to get the optimal parameter values """
+    opt_solution = scipy.optimize.minimize(
+        encoder.loss_value, encoder.theta, args=(training_data,), method='L-BFGS-B',
+        jac=True, options={'maxiter': max_iterations, 'disp': True}
+    )
+    print 'Train over.'
+    opt_theta = opt_solution.x
+    opt_w1 = opt_theta[encoder.limit0: encoder.limit1].reshape(hidden_size, visible_size)
+
+    visualize_w1(opt_w1, vis_patch_side, hid_patch_side)
+
+
+# 稀疏自编码应用2
+def apply2():
+    vis_side = 28
+    hid_side = 16
+    rho = 0.1  # desired average activation of hidden units
+    lamda = 0.001  # weight decay parameter
+    beta = 3  # weight of sparsity penalty term
+    num_pics = 10000  # number of training examples
+    max_iterations = 400  # number of optimization iterations
+
+    visible_size = vis_side * vis_side  # number of input units
+    hidden_size = hid_side * hid_side  # number of hidden units
+
+    training_data = load_mnist_images('data/train-images.idx3-ubyte')[:, :num_pics]
+    from scipy.misc import toimage
+    toimage(training_data[:, 1].reshape((28, 28))).show()
+
+    encoder = SparseAutoEncoder(visible_size, hidden_size, rho, lamda, beta)
+
+    print '...Training'
+    opt_solution = scipy.optimize.minimize(
+        encoder.loss_value, encoder.theta, args=(training_data,), method='L-BFGS-B',
+        jac=True, options={'maxiter': max_iterations, 'disp': True}
+    )
+    print 'Train over.'
+    opt_theta = opt_solution.x
+    opt_w1 = opt_theta[encoder.limit0: encoder.limit1].reshape(hidden_size, visible_size)
+
+    visualize_w1(opt_w1, vis_side, hid_side)
+
+
+if __name__ == '__main__':
+    # apply1()
+    apply2()
